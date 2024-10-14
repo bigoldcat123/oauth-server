@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cache_code {
+  id          String    @id @default(dbgenerated("(uuid())")) @db.VarChar(255)
+  create_time DateTime? @db.DateTime(0)
+  app_id      String?   @db.VarChar(255)
+  code        String?   @db.VarChar(255)
+  user_id     String?   @db.VarChar(255)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model data_app {
+  id                         String                    @id @default(dbgenerated("(uuid())")) @db.VarChar(255)
+  create_time                DateTime?                 @db.DateTime(0)
+  name                       String?                   @unique(map: "name") @db.VarChar(255)
+  homepage_url               String?                   @db.VarChar(255)
+  app_description            String?                   @unique(map: "app_description") @db.VarChar(255)
+  authorization_callback_url String?                   @db.VarChar(255)
+  logo                       String?                   @db.VarChar(255)
+  user_id                    String?                   @db.VarChar(255)
+  data_user                  data_user?                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "data_app_ibfk_1")
+  data_app_client_secrete    data_app_client_secrete[]
+
+  @@index([user_id], map: "user_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model data_app_client_secrete {
+  id             String    @id @default(dbgenerated("(uuid())")) @db.VarChar(255)
+  create_time    DateTime? @db.DateTime(0)
+  app_id         String?   @db.VarChar(255)
+  client_secrete String?   @db.VarChar(255)
+  data_app       data_app? @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "data_app_client_secrete_ibfk_1")
+
+  @@index([app_id], map: "app_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model data_user {
+  id          String     @id @default(dbgenerated("(uuid())")) @db.VarChar(255)
+  create_time DateTime?  @db.DateTime(0)
+  name        String?    @unique(map: "name") @db.VarChar(255)
+  password    String?    @db.VarChar(255)
+  email       String?    @unique(map: "email") @db.VarChar(255)
+  avatar      String?    @db.VarChar(255)
+  data_app    data_app[]
+}
