@@ -1,5 +1,4 @@
-const s= {
-    name :"nameasd",
-    age:12
-}
-console.log(s['name']);
+const map = new Map()
+map.set('1',1)
+map.set('1',2)
+console.log(map);

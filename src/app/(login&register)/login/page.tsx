@@ -3,15 +3,16 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Login from "./login";
 import { COOKIE_SESSION_NAME } from "@/constant";
-import { use, useEffect } from "react";
+import { Suspense, use, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
-  const callBackUrl = useSearchParams().get('callbackUrl')
+function LoginPage() {
+  const searchParams = useSearchParams()
+  const callBackUrl = searchParams.get('callbackUrl')
   return (
     <>
-    <Card className="w-[24rem]">
+      <Card className="w-[24rem]">
         <CardHeader>
           <p >Login to Dalem</p>
         </CardHeader>
@@ -24,4 +25,12 @@ export default function LoginPage() {
       </Card>
     </>
   );
+}
+
+export default function P() {
+  return (
+    <Suspense>
+      <LoginPage></LoginPage>
+    </Suspense>
+  )
 }
