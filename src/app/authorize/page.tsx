@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { User, verifyJwt } from "@/lib/jwt";
 import Link from "next/link";
 import AuthorizeBtns from "./handleAuth";
+import { cookies } from "next/headers";
 
 export default async function AuthorizationPage({
   searchParams
@@ -16,7 +17,7 @@ export default async function AuthorizationPage({
   const app = await getAppById(searchParams.client_id)
   if (!app) {
     return <div>no such app..</div>
-  }
+  } 
   const currentUser: User = verifyJwt(searchParams.client_id)
   
   
@@ -30,6 +31,15 @@ export default async function AuthorizationPage({
   
   return (
     <>
+    <div className=" mb-16 flex items-center ">
+      <div className=" size-20  rounded-full overflow-hidden">
+        <img className=" size-full object-cover" src={app.logo ?? ''}/>
+      </div>
+      <div>----------</div>
+      <div className=" size-20  rounded-full overflow-hidden">
+        <img className=" size-full object-cover" src={'/logo.png'}/>
+      </div>
+    </div>
       <Card className=" w-96">
         <CardContent className=" border-b-2">
           <div>

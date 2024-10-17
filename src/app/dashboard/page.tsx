@@ -1,7 +1,7 @@
 
 import { listApp } from "@/actions/dao/app";
 import Logout from "@/components/logout";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useAuth from "@/lib/hooks/useAuth";
 import { Divide } from "lucide-react";
 import Link from "next/link";
@@ -16,16 +16,19 @@ export default async function DashBoardPage() {
           {
             apps.map(app => {
               return (
-                <Link key={app.id} href={`/dashboard/app/${app.id}`}>
-                  <Card  className=" cursor-pointer">
-                    <CardHeader className=" border-b-2 text-xl">
-                      <h2>{app.name}</h2>
-                    </CardHeader>
-                    <CardContent>
-                      <p>{app.app_description}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <div key={app.id}>
+                  <Link href={`/dashboard/app/${app.id}`}>
+                    <Card className=" cursor-pointer h-56">
+                      <CardHeader className=" ">
+                        <CardTitle>{app.name}</CardTitle>
+                      </CardHeader>
+                      <CardContent className=" break-words clip" >
+                         {app.app_description}
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+
               )
             })
           }

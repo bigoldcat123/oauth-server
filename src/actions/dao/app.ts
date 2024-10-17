@@ -3,6 +3,7 @@
 import db from "@/db"
 import { verifyJwt } from "@/lib/jwt"
 import { data_app, Prisma } from "@prisma/client"
+import { createReadStream, writeFileSync } from "fs"
 
 
 export const createNewApp = async (app: Prisma.data_appCreateInput) => {
@@ -164,12 +165,25 @@ export const deleteAppAction = async (appId: string) => {
         return false
     }
 }
-
+const saveFile = async (file: File) => {
+    const path = process.env.FILE_LOCATION as string
+    const prefix = process.env.STATIC_IMG_PRIFIX
+    const s = await file.arrayBuffer()
+    const fname = crypto.randomUUID() + '.' + file.name.split('.').pop()
+    writeFileSync(`${path}${fname}`,new Uint8Array(s))
+    return prefix + fname
+}
+export const uploadAppIconAction = async (appId: string,formdate:FormData) => {
+    const f:File = formdate.get('file') as File
+    const url = await saveFile(f);
+    return await updateAppAction(appId, {
+        logo:url
+    })
+}
 export const updateAppAction = async (appId: string, app: Prisma.data_appUpdateInput) => {
     if (await checkaAppAdmin(appId)) {
         try {
             // const old = await getAppById(appId)
-
             const r = await db.data_app.update({
                 where: {
                     id: appId

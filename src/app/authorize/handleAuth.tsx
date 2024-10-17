@@ -14,7 +14,7 @@ export default function AuthorizeBtns({
     return (
         <>
             <div className=" w-full flex justify-between py-4 gap-x-3">
-                <Button className=" size-full">Cancle</Button>
+                <Button className="size-full">Cancle</Button>
                 <Button onClick={() => AuthorizeAction(app,currentUser)} className=" size-full bg-green-500">Authorize</Button>
             </div>
         </>
