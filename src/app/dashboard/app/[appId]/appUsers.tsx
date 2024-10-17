@@ -3,6 +3,7 @@ import { clearAllUsers } from "@/actions/dao/app";
 import { Button } from "@/components/ui/button";
 import { data_app_user } from "@prisma/client";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AppUsers({
   users,
@@ -16,6 +17,9 @@ export default function AppUsers({
     clearAllUsers(appId).then(res => {
       if (res) {
         setUserList([])
+        toast('tips',{
+          description: 'All tokens revoked'
+        })
       }
     })
   }

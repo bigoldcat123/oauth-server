@@ -119,8 +119,6 @@ export const generateClientSecretAction = async (appId: string) => {
 export const clearAllUsers = async (appId: string) => {
     try {
         if (await checkaAppAdmin(appId)) {
-            console.log('i am admin');
-            
             await db.data_app_user.deleteMany({
                 where: {
                     app_id: appId

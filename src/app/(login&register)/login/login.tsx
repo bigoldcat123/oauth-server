@@ -40,16 +40,17 @@ export default function Login() {
     },
   })
 
+  const [message,setMessage] = useState('')
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    setMessage('')
     setIsLoading(true)
     LoginAction(values,callBackUrl).then(res => {
       setIsLoading(false)
       console.log(res);
-      
+      setMessage(res)
     })
   }
   return (
@@ -82,6 +83,8 @@ export default function Login() {
             )}
           />
           <Button disabled={isLoading} type="submit">Submit</Button>
+          <p className=" text-red-600">{message}</p>
+          
         </form>
       </Form>
   )

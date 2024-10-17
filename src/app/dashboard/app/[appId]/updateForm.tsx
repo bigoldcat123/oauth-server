@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { data_app } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import z from 'zod'
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -49,7 +50,12 @@ export default function UpdateForm({
     // TODO UPDATE
     console.log(values)
     updateAppAction(app.id, values).then(res => {
-      
+      if(res) {
+        toast('tips',{
+          description: 'App updated',
+          className:' bg-green-300'
+        })
+      }
     })
   }
   return (

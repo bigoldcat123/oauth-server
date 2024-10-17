@@ -67,20 +67,20 @@ export default function Register() {
     resolver: zodResolver(formSchema),
   })
 
+  const [message, setMessage] = useState('')
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    setMessage('')
     setIsLoading(true)
     RegisterAction({
       email: values.email,
       password: values.password,
       code: values.code
     }, callbackUrl).then(res => {
-      console.log(res);
-
       setIsLoading(false)
+      setMessage(res)
     })
   }
   return (
@@ -143,6 +143,7 @@ export default function Register() {
         </div>
 
         <Button disabled={isLoading} type="submit">Submit</Button>
+        <p className="text-sm text-red-500">{message}</p>
       </form>
     </Form>
   )
