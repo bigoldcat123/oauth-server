@@ -48,6 +48,8 @@ export default function Login() {
     setIsLoading(true)
     LoginAction(values,callBackUrl).then(res => {
       setIsLoading(false)
+      console.log(res);
+      
     })
   }
   return (
@@ -58,7 +60,7 @@ export default function Login() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" placeholder="please enter email" {...field} />
                 </FormControl>

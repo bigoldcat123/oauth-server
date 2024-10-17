@@ -2,13 +2,15 @@
 
 import { cookies } from "next/headers";
 import { createNewUser, getUserBy } from "./dao/user";
-import { COOKIE_SESSION_NAME } from "@/constant";
+import { authCode, COOKIE_SESSION_NAME } from "@/constant";
 import { NextRequest, NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { setCookie } from ".";
-import { isVerifiedJwt, verifyJwt } from "@/lib/jwt";
+import { isVerifiedJwt, User, verifyJwt } from "@/lib/jwt";
 import sendCode from "@/lib/mailSender";
 import { getCodeCache, setCodeCache } from "@/lib/codeCache";
+import { data_app } from "@prisma/client";
+import db from "@/db";
 
 function checkPassword(pwd1?: string | null, pwd2?: string | null) {
     return pwd1 === pwd2
@@ -26,7 +28,9 @@ export async function LoginAction(credentials: { email: string; password: string
         return 'wrong password'
     }
     setCookie(user)
-    if (callBackUrl) redirect(callBackUrl)
+    console.log('redirect to',callBackUrl);
+    
+    if (callBackUrl) return redirect(callBackUrl)
     redirect('/dashboard')
 }
 
@@ -88,3 +92,27 @@ export async function auth() {
         }
     }
 }
+
+const setCode = (user:User) => {
+    const code = Math.floor(Math.random() * 1000000).toString()
+    setCodeCache(authCode + code,user , Date.now() + 60 * 1000 * 10)
+    return code
+}
+export const AuthorizeAction = async (app:data_app,user:User) => {
+    const code = setCode(user)
+    await db.data_app_user.create({
+        data:{
+            app_id:app.id,
+            user_id:user!.id,
+            status:1
+        }
+    })
+    //app.authorization_callback_url 
+    redirect(app.authorization_callback_url + '?code=' + code)
+}
+export const AuthorizeSuccessAction = async (app:data_app,user:User) => {
+    console.log('e already authorized');
+    const code = setCode(user)
+    redirect(app.authorization_callback_url+ '?code=' + code)
+}
+//http://localhost:3000/authorize?client_id=f9ae1dd6-8b90-11ef-b4da-0242ac110002

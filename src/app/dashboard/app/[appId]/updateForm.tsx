@@ -1,10 +1,11 @@
 'use client'
-import { createNewApp } from '@/actions/dao/app'
+import { createNewApp, deleteAppAction, updateAppAction } from '@/actions/dao/app'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { data_app } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
@@ -20,27 +21,35 @@ const formSchema = z.object({
   homepage_url: z.string().url({ message: 'Please enter a valid url' }),
   authorization_callback_url: z.string().url({ message: 'Please enter a valid url' })
 })
-export default function NewAppPage() {
+export default function UpdateForm({
+    app
+}:{
+    app:data_app
+}) {
   const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      app_description: '',
-      homepage_url: '',
-      authorization_callback_url: ''
+      name: app.name ?? '',
+      app_description: app.app_description ?? '',
+      homepage_url:  app.homepage_url ?? '',
+      authorization_callback_url: app.authorization_callback_url ??''
     }
   })
 
+  const deleteApp = () => {
+    deleteAppAction(app.id).then(res => {
+      router.push('/dashboard')
+    })
+  }
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    // TODO UPDATE
     console.log(values)
-    createNewApp(values).then(res => {
-      console.log(res);
-      if (res)
-        router.push(`/dashboard/app/${res?.id}`)
+    updateAppAction(app.id, values).then(res => {
+      
     })
   }
   return (
@@ -100,9 +109,12 @@ export default function NewAppPage() {
                 </FormItem>
               )}
             />
-            <Button size={'sm'} variant={'outline'} type="submit">Submit</Button>
+            <Button size={'sm'} variant={'outline'} type="submit">Save</Button>
           </form>
         </Form>
+      </div>
+      <div>
+        <Button variant={'destructive'} onClick={() => {deleteApp()}}>Delete App</Button>
       </div>
     </>
   );

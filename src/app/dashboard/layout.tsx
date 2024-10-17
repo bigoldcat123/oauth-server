@@ -6,8 +6,10 @@ export default function DashBoardLayout({ children }: {
 }) {
     return (
         <>
-            <NaviBar />
-            {children}
+            <div className=" h-screen flex flex-col">
+                <NaviBar />
+                {children}
+            </div>
         </>
     )
 }

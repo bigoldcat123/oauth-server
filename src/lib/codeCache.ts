@@ -1,9 +1,9 @@
 const codeCaches = new Map<string,{
-    code:string,
+    data:any,
     expires: number
 }>()
-export const setCodeCache = (key:string,code:string,expires:number) => {
-    codeCaches.set(key,{code,expires})
+export const setCodeCache = (key:string,data:any,expires:number) => {
+    codeCaches.set(key,{data,expires})
     console.log(codeCaches);
     
     clearExpiredCaches()
@@ -15,7 +15,7 @@ export const getCodeCache = (key:string) => {
         codeCaches.delete(key)
         return null
     }
-    return cache
+    return cache.data
 }
 const clearExpiredCaches = () => {
     for (let key of codeCaches.keys()) {
